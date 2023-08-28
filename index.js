@@ -80,6 +80,22 @@ app.put('/api/candidates/:id', (req, res) => {
   res.send(candidate);
 });
 
+app.delete('/api/candidates/:id', (req, res) => {
+  // Look up the candidate
+  // Not existing, return 404
+  const candidate = candidates.find(c => c.id === parseInt(req.params.id));
+  if(!candidate) return res.status(404).send("This candidates with the given ID was not found")
+
+  // Delete
+  const index = candidates.indexOf(candidate);
+  candidates.splice(index, 1);
+
+  // Return the same candidate
+  res.send(candidate);
+});
+
+
+
 function validateCandidate(candidate) {
   const schema = {
     photo: Joi.string().required(),
