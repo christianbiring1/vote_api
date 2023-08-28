@@ -64,7 +64,7 @@ app.put('/api/candidates/:id', (req, res) => {
   // Look up the candidate
   // If not existing, return 404
   const candidate = candidates.find(c => c.id === parseInt(req.params.id));
-  if(!candidate) return res.status(404).send("This candidates with the given ID was not found")
+  if(!candidate) return res.status(404).send("The candidates with the given ID was not found")
 
   // Validate
   // If invalid, return 400 - Bad request
@@ -84,7 +84,7 @@ app.delete('/api/candidates/:id', (req, res) => {
   // Look up the candidate
   // Not existing, return 404
   const candidate = candidates.find(c => c.id === parseInt(req.params.id));
-  if(!candidate) return res.status(404).send("This candidates with the given ID was not found")
+  if(!candidate) return res.status(404).send("The candidates with the given ID was not found")
 
   // Delete
   const index = candidates.indexOf(candidate);
