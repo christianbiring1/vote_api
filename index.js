@@ -8,21 +8,21 @@ app.use(express.json());
 const candidates = [
   {
       id: 1,
-      photo: '',
+      photo: 'ptoho',
       name: 'Williams Doe',
       position: 'Deputy',
       political_party: 'UNIC'
     },
     {
       id: 2,
-      photo: '',
+      photo: 'photo',
       name: 'Jane Doe',
       position: 'Deputy',
       political_party: 'UNIC'
     },
     {
       id: 3,
-      photo: '',
+      photo: 'photo',
       name: 'Williams Doe',
       position: 'Deputy',
       political_party: 'UNIC'
@@ -33,39 +33,21 @@ app.get('/', (req, res) => {
   res.send('Welcome to Vote App!');
 });
 
-app.get('/api/elections', (req, res) => {
-  res.send('votes')
-
-});
-
-app.get('/api/elections/:id', (req, res) => {
-  res.send(req.params.id)
-  
-});
-
 app.get('/api/candidates', (req, res) => {
   res.send(candidates)
 });
 
 app.get('/api/candidates/:id', (req, res) => {
   const candidate = candidates.find(c => c.id === parseInt(req.params.id));
-  if(!candidate) return res.status(404).send("This candidates with the given ID was not found")
+  if(!candidate) return res.status(404).send("The candidates with the given ID was not found")
   res.send(candidate);
 })
 
 app.post('/api/candidates', (req, res) => {
-
-  const schema = {
-    photo: Joi.string().required(),
-    name: Joi.string().min(3).required(),
-    position: Joi.string().required(),
-    political_party: Joi.string().required()
-  }
-
-  const result = Joi.validate(req.body, schema);
-
-  if(result.error) return res.status(400).send(result.error.details[0].message);
   
+  const { error } = validateCandidate(req.body);
+  if(error) return res.status(400).send(error.details[0].message);
+
   const candidate = {
     id: candidates.length + 1,
     photo: req.body.photo,
@@ -73,6 +55,7 @@ app.post('/api/candidates', (req, res) => {
     position: req.body.position,
     political_party: req.body.political_party
   };
+
   candidates.push(candidate);
   res.send(candidate);
 });
@@ -85,15 +68,8 @@ app.put('/api/candidates/:id', (req, res) => {
 
   // Validate
   // If invalid, return 400 - Bad request
-  const schema = {
-    photo: Joi.string().required(),
-    name: Joi.string().min(3).required(),
-    position: Joi.string().required(),
-    political_party: Joi.string().required()
-  }
-
-  const result = Joi.validate(req.body, schema);
-  if(result.error) return res.status(400).send(result.error.details[0].message);
+  const { error } = validateCandidate(req.body);
+  if(error) return res.status(400).send(error.details[0].message);
 
   // Update candidate
   candidate.photo = req.body.photo;
@@ -102,7 +78,18 @@ app.put('/api/candidates/:id', (req, res) => {
   candidate.political_party = req.body.political_party;
   // Return the updated candidate
   res.send(candidate);
-})
+});
+
+function validateCandidate(candidate) {
+  const schema = {
+    photo: Joi.string().required(),
+    name: Joi.string().min(3).required(),
+    position: Joi.string().required(),
+    political_party: Joi.string().required()
+  }
+
+  return Joi.validate(candidate, schema);
+}
 
 
 const port = process.env.PORT || 3000;
