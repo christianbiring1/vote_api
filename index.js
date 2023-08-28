@@ -1,3 +1,4 @@
+const Joi = require('joi');
 const express = require('express');
 const app = express();
 
@@ -44,13 +45,35 @@ app.get('/api/elections/:id', (req, res) => {
 
 app.get('/api/candidates', (req, res) => {
   res.send(candidates)
-  
 });
 
 app.get('/api/candidates/:id', (req, res) => {
   const candidate = candidates.find(c => c.id === parseInt(req.params.id));
-  console.log(candidate)
-  if(!candidate) res.status(404).send("This candidates with the given ID was not found")
+  if(!candidate) return res.status(404).send("This candidates with the given ID was not found")
+  res.send(candidate);
+})
+
+app.post('/api/candidates', (req, res) => {
+
+  const schema = {
+    photo: Joi.string().required(),
+    name: Joi.string().min(3).required(),
+    position: Joi.string().required(),
+    political_party: Joi.string().required()
+  }
+
+  const result = Joi.validate(req.body, schema);
+
+  if(result.error) return res.status(400).send(result.error.details[0].message);
+  
+  const candidate = {
+    id: candidates.length + 1,
+    photo: req.body.photo,
+    name: req.body.name,
+    position: req.body.position,
+    political_party: req.body.political_party
+  };
+  candidates.push(candidate);
   res.send(candidate);
 })
 
