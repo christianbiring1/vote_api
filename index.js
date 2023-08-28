@@ -75,6 +75,33 @@ app.post('/api/candidates', (req, res) => {
   };
   candidates.push(candidate);
   res.send(candidate);
+});
+
+app.put('/api/candidates/:id', (req, res) => {
+  // Look up the candidate
+  // If not existing, return 404
+  const candidate = candidates.find(c => c.id === parseInt(req.params.id));
+  if(!candidate) return res.status(404).send("This candidates with the given ID was not found")
+
+  // Validate
+  // If invalid, return 400 - Bad request
+  const schema = {
+    photo: Joi.string().required(),
+    name: Joi.string().min(3).required(),
+    position: Joi.string().required(),
+    political_party: Joi.string().required()
+  }
+
+  const result = Joi.validate(req.body, schema);
+  if(result.error) return res.status(400).send(result.error.details[0].message);
+
+  // Update candidate
+  candidate.photo = req.body.photo;
+  candidate.name = req.body.name;
+  candidate.position = req.body.position;
+  candidate.political_party = req.body.political_party;
+  // Return the updated candidate
+  res.send(candidate);
 })
 
 
