@@ -65,6 +65,7 @@ router.put('/:id', (req, res) => {
   if(error) return res.status(400).send(error.details[0].message);
 
   // Update candidate
+  candidate.id = req.body.id;
   candidate.photo = req.body.photo;
   candidate.name = req.body.name;
   candidate.position = req.body.position;
