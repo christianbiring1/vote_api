@@ -1,10 +1,15 @@
+const mongoose = require('mongoose');
 const express = require('express');
 const app = express();
+app.use(express.json());
+
+mongoose.connect('mongodb://localhost/voty')
+  .then(() => console.log('Connected to MongoDB...'))
+  .catch(err => console.error('Coould not connect to mongoDB...'))
 
 const candidates = require('./routes/candidates');
 app.use('/api/candidates', candidates);
 
-app.use(express.json());
 
 
 app.get('/', (req, res) => {
