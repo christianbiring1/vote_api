@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
 const Joi = require('joi');
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 
 
 const candidateSchema = mongoose.Schema({
