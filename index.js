@@ -7,7 +7,10 @@ mongoose.connect('mongodb://localhost/voty')
   .then(() => console.log('Connected to MongoDB...'))
   .catch(err => console.error('Coould not connect to mongoDB...'))
 
+  const elections = require('./routes/elections');
 const candidates = require('./routes/candidates');
+
+app.use('/api/elections', elections);
 app.use('/api/candidates', candidates);
 
 
