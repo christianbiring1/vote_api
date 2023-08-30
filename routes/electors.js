@@ -1,21 +1,7 @@
-const Joi = require('joi');
+const {Elector, validateElector} = require('../models/elector');
 const express = require('express');
 const router = express.Router();
 
-const mongoose = require('mongoose');
-
-
-const ElectorSchema = new mongoose.Schema({
-  name: {
-    type: String
-  },
-  id: {
-    type: String,
-    required: true,
-  },
-});
-
-const Elector = mongoose.model('Elector', ElectorSchema);
 
 router.get('/', async (req, res) => {
   const electors = await Elector.find();
@@ -65,16 +51,6 @@ router.delete('/:id', async (req, res) => {
 
   res.send(election);
 });
-
-
-function validateElector(elector) {
-  const schema = {
-    name: Joi.string().required(),
-    id: Joi.string().required()
-  };
-
-  return Joi.validate(elector, schema);
-};
 
 
 module.exports = router;

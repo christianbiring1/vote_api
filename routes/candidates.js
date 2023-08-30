@@ -1,35 +1,7 @@
-const Joi = require('joi');
-const mongoose = require('mongoose');
+const {Candidate, validateCandidate} = require('../models/candidate');
+
 const express = require('express');
 const router = express.Router();
-
-
-const candidateSchema = new mongoose.Schema({
-  photo: {
-    type: String,
-    required: true,
-  },
-  name: {
-    type: String,
-    required: true,
-    minlength: 3,
-    maxlength: 20
-  },
-  position: {
-    type: String,
-    required: true
-  },
-  political_party :{
-    type: String,
-    required: true
-  },
-  voice: {
-    type: Number,
-    default: 0
-  }
-});
-
-const Candidate = mongoose.model('Candidate', candidateSchema);
 
 router.get('/', async (req, res) => {
   const candidates = await Candidate.find().sort('name');
@@ -64,6 +36,7 @@ router.put('/:id', async(req, res) => {
   const { error } = validateCandidate(req.body);
   if(error) return res.status(400).send(error.details[0].message);
   
+  // Look up the candidate and Update candidate
   const candidate = await Candidate.findByIdAndUpdate(req.params.id, {
     photo: req.body.photo,
     name: req.body.name,
@@ -72,9 +45,7 @@ router.put('/:id', async(req, res) => {
     new: true
   });
 
-  // Look up the candidate
   // If not existing, return 404
-  // Update candidate
   if(!candidate) return res.status(404).send("The candidates with the given ID was not found")
 
   // Return the updated candidate
@@ -82,8 +53,7 @@ router.put('/:id', async(req, res) => {
 });
 
 router.delete('/:id', async (req, res) => {
-  // Look up the candidate
-  // Delete
+  // Look up the candidate and Delete
   const candidate = await Candidate.findByIdAndRemove(req.params.id);
   // Not existing, return 404
   if(!candidate) return res.status(404).send("The candidates with the given ID was not found")
@@ -92,17 +62,5 @@ router.delete('/:id', async (req, res) => {
   res.send(candidate);
 });
 
-
-
-function validateCandidate(candidate) {
-  const schema = {
-    photo: Joi.string().required(),
-    name: Joi.string().min(3).required(),
-    position: Joi.string().required(),
-    political_party: Joi.string().required()
-  }
-
-  return Joi.validate(candidate, schema);
-}
 
 module.exports = router;
