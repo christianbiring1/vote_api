@@ -5,11 +5,13 @@ const mongoose = require('mongoose');
 const ElectorSchema = new mongoose.Schema({
   name: {
     type: String,
-    lowercase: true
+    lowercase: true,
+    trim: true
   },
   id: {
     type: String,
     required: true,
+    trim: true
   },
 });
 

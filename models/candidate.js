@@ -10,6 +10,7 @@ const candidateSchema = new mongoose.Schema({
   name: {
     type: String,
     lowercase: true,
+    trim: true,
     required: true,
     minlength: 3,
     maxlength: 20
@@ -17,11 +18,13 @@ const candidateSchema = new mongoose.Schema({
   position: {
     type: String,
     lowercase: true,
+    trim: true,
     required: true
   },
   political_party :{
     type: String,
     lowercase: true,
+    trim: true,
     required: true
   },
   voice: {
