@@ -1,4 +1,6 @@
 const {Candidate, validateCandidate} = require('../models/candidate');
+const { Election } = require('../models/election');
+const { Position } = require('../models/position');
 
 const express = require('express');
 const router = express.Router();
@@ -20,10 +22,24 @@ router.post('/', async(req, res) => {
   const { error } = validateCandidate(req.body);
   if(error) return res.status(400).send(error.details[0].message);
 
+  const election = await Election.findById(req.body.electionId);
+  if(!election) return res.status(400).send('Invalid election');
+
+  const position = await Position.findById(req.body.positionId);
+  if(!position) return res.status(400).send('Invalid position');
+
   let candidate = new Candidate({
     photo: req.body.photo,
     name: req.body.name,
-    position: req.body.position,
+    election: {
+      _id: election._id,
+      name: election.name,
+      date: election.date
+    },
+    position: {
+      _id: position._id,
+      name: position.name
+    },
     political_party: req.body.political_party
   });
   candidate = await candidate.save();

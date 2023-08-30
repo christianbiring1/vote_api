@@ -1,6 +1,8 @@
  
 const Joi = require('joi');
 const mongoose = require('mongoose');
+const {electionSchema} = require('./election');
+const {positionSchema} = require('./position');
 
 const candidateSchema = new mongoose.Schema({
   photo: {
@@ -15,10 +17,12 @@ const candidateSchema = new mongoose.Schema({
     minlength: 3,
     maxlength: 20
   },
+  election: {
+    type: electionSchema,
+    required: true
+  },
   position: {
-    type: String,
-    lowercase: true,
-    trim: true,
+    type: positionSchema,
     required: true
   },
   political_party :{
@@ -40,7 +44,8 @@ function validateCandidate(candidate) {
   const schema = {
     photo: Joi.string().required(),
     name: Joi.string().min(3).required(),
-    position: Joi.string().required(),
+    electionId: Joi.string().required(),
+    positionId: Joi.string().required(),
     political_party: Joi.string().required()
   }
 

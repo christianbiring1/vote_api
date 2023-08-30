@@ -1,7 +1,7 @@
 const Joi = require('joi');
 const mongoose = require('mongoose');
 
-const PositionSchema = new mongoose.Schema({
+const positionSchema = new mongoose.Schema({
   name: {
     type: String,
     lowercase: true,
@@ -9,7 +9,7 @@ const PositionSchema = new mongoose.Schema({
   }
 });
 
-const Position = mongoose.model('Position', PositionSchema);
+const Position = mongoose.model('Position', positionSchema);
 
 function validatePosition(position) {
   const schema = {
@@ -20,4 +20,5 @@ function validatePosition(position) {
 };
 
 exports.Position = Position;
+exports.positionSchema = positionSchema;
 exports.validatePosition = validatePosition;

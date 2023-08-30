@@ -27,4 +27,5 @@ function validateElection(election) {
 };
 
 exports.Election = Election;
+exports.electionSchema = electionSchema;
 exports.validateElection = validateElection;
