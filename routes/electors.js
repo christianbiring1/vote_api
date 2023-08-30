@@ -1,3 +1,4 @@
+const { Election } = require('../models/election');
 const {Elector, validateElector} = require('../models/elector');
 const express = require('express');
 const router = express.Router();
@@ -20,9 +21,19 @@ router.post('/', async(req, res) => {
   const { error } = validateElector(req.body);
   if(error) return res.status(400).send(error.details[0].message);
 
+  const election = await Election.findById(req.body.electionId);
+  if(!election) return res.status(400).send('Invalid election');
+
+
   let elector = new Elector({
     name: req.body.name,
-    id: req.body.id
+    id: req.body.id,
+    province: req.body.province,
+    election: {
+      _id: election._id,
+      name: election.name,
+      date: election.date
+    }
   });
   elector = await elector.save();
   res.send(elector);
@@ -34,7 +45,9 @@ router.put('/:id', async (req, res) => {
 
   const elector = await Elector.findByIdAndUpdate(req.params.id, {
     name: req.body.name,
-    id: req.body.id
+    id: req.body.id,
+    province: req.body.province,
+    electionId: req.body.electionId,
   },{
     new: true
   });

@@ -56,7 +56,7 @@ router.put('/:id', async(req, res) => {
   const candidate = await Candidate.findByIdAndUpdate(req.params.id, {
     photo: req.body.photo,
     name: req.body.name,
-    position: req.body.position,
+    positionId: req.body.positionId,
     political_party: req.body.political_party }, {
     new: true
   });

@@ -1,4 +1,3 @@
- 
 const Joi = require('joi');
 const mongoose = require('mongoose');
 const {electionSchema} = require('./election');
@@ -53,4 +52,5 @@ function validateCandidate(candidate) {
 }
 
 exports.Candidate = Candidate;
+exports.candidateSchema = candidateSchema;
 exports.validateCandidate = validateCandidate;
