@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 
 const ElectorSchema = new mongoose.Schema({
   name: {
-    type: String
+    type: String,
+    lowercase: true
   },
   id: {
     type: String,

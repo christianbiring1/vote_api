@@ -9,16 +9,19 @@ const candidateSchema = new mongoose.Schema({
   },
   name: {
     type: String,
+    lowercase: true,
     required: true,
     minlength: 3,
     maxlength: 20
   },
   position: {
     type: String,
+    lowercase: true,
     required: true
   },
   political_party :{
     type: String,
+    lowercase: true,
     required: true
   },
   voice: {

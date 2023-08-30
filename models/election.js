@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const electionSchema = new mongoose.Schema({
   name: {
     type: String,
+    lowercase: true,
     required: true
   },
   date : {
