@@ -8,10 +8,12 @@ mongoose.connect('mongodb://localhost/voty')
   .catch(err => console.error('Coould not connect to mongoDB...'))
 
 const elections = require('./routes/elections');
+const positions = require('./routes/positions');
 const candidates = require('./routes/candidates');
 const electors = require('./routes/electors');
 
 app.use('/api/elections', elections);
+app.use('/api/positions', positions);
 app.use('/api/candidates', candidates);
 app.use('/api/electors', electors);
 

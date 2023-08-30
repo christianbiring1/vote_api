@@ -29,4 +29,5 @@ function validateElector(elector) {
 };
 
 exports.Elector = Elector;
+exports.ElectorSchema = ElectorSchema;
 exports.validateElector = validateElector;
