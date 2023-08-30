@@ -1,10 +1,10 @@
 const Joi = require('joi');
+const mongoose = require('mongoose');
 const express = require('express');
 const router = express.Router();
-const mongoose = require('mongoose');
 
 
-const candidateSchema = mongoose.Schema({
+const candidateSchema = new mongoose.Schema({
   photo: {
     type: String,
     required: true,
@@ -21,21 +21,25 @@ const candidateSchema = mongoose.Schema({
   },
   political_party :{
     type: String,
-    require: true
+    required: true
+  },
+  voice: {
+    type: Number,
+    default: 0
   }
 });
 
-const Candidate = new mongoose.model('Candidate', candidateSchema);
+const Candidate = mongoose.model('Candidate', candidateSchema);
 
-router.get('/', async(req, res) => {
+router.get('/', async (req, res) => {
   const candidates = await Candidate.find().sort('name');
   res.send(candidates);
 });
 
-router.get('/:id', async(req, res) => {
+router.get('/:id', async (req, res) => {
   const candidate = await Candidate.findById(req.params.id);
 
-  if(!candidate) return res.status(400).send("The candidates with the given ID was not found")
+  if(!candidate) return res.status(404).send("The candidates with the given ID was not found")
   res.send(candidate);
 })
 
@@ -64,13 +68,14 @@ router.put('/:id', async(req, res) => {
     photo: req.body.photo,
     name: req.body.name,
     position: req.body.position,
-    political_party: req.body.political_party
-  }, {new: true});
+    political_party: req.body.political_party }, {
+    new: true
+  });
 
   // Look up the candidate
   // If not existing, return 404
   // Update candidate
-  if(!candidate) return res.status(400).send("The candidates with the given ID was not found")
+  if(!candidate) return res.status(404).send("The candidates with the given ID was not found")
 
   // Return the updated candidate
   res.send(candidate);
