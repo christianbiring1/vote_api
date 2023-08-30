@@ -34,6 +34,9 @@ router.post('/', async (req, res) => {
       province: elector.province
     }
   });
+
+  candidate.voice += 1;
+  candidate.save();
   vote = await vote.save();
   res.send(vote);
 });
