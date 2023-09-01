@@ -25,7 +25,7 @@ router.post('/', async(req, res) => {
   if(!election) return res.status(400).send('Invalid election');
 
 
-  let elector = new Elector({
+  const elector = new Elector({
     name: req.body.name,
     id: req.body.id,
     province: req.body.province,
@@ -35,7 +35,7 @@ router.post('/', async(req, res) => {
       date: election.date
     }
   });
-  elector = await elector.save();
+  await elector.save();
   res.send(elector);
 });
 

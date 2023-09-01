@@ -20,7 +20,7 @@ router.post('/', async (req, res) => {
   const elector = await Elector.findById(req.body.electorId);
   if(!elector) return res.status(400).send('Invalid elector');
 
-  let vote = new Vote({
+  const vote = new Vote({
     candidate: {
       _id: candidate._id,
       name: candidate.name,
@@ -37,7 +37,7 @@ router.post('/', async (req, res) => {
 
   candidate.voice += 1;
   candidate.save();
-  vote = await vote.save();
+  await vote.save();
   res.send(vote);
 });
 

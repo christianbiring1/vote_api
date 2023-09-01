@@ -12,9 +12,9 @@ router.post('/', async (req, res) => {
   const { error } = validatePosition(req.body);
   if(error) return res.status(400).send(error.details[0].message);
 
-  let position = new Position({ name: req.body.name });
+  const position = new Position({ name: req.body.name });
 
-  position = await position.save();
+  await position.save();
   res.send(position);
 });
 

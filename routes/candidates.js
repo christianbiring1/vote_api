@@ -28,7 +28,7 @@ router.post('/', async(req, res) => {
   const position = await Position.findById(req.body.positionId);
   if(!position) return res.status(400).send('Invalid position');
 
-  let candidate = new Candidate({
+  const candidate = new Candidate({
     photo: req.body.photo,
     name: req.body.name,
     election: {
@@ -42,7 +42,7 @@ router.post('/', async(req, res) => {
     },
     political_party: req.body.political_party
   });
-  candidate = await candidate.save();
+  await candidate.save();
   res.send(candidate);
 });
 
