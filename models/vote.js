@@ -1,4 +1,5 @@
 const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
 const mongoose = require('mongoose');
 const {positionSchema} = require('./position');
 
@@ -48,8 +49,8 @@ const Vote = mongoose.model('Vote', voteSchema);
 
 function validateVote(vote) {
   const schema = {
-    electorId: Joi.string().required(),
-    candidateId: Joi.string().required()
+    electorId: Joi.objectId().required(),
+    candidateId: Joi.objectId().required()
   };
 
   return Joi.validate(vote, schema);
