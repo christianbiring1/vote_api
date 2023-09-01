@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const {Position, validatePosition} = require('../models/position');
 
 const express = require('express');
@@ -12,7 +13,7 @@ router.post('/', async (req, res) => {
   const { error } = validatePosition(req.body);
   if(error) return res.status(400).send(error.details[0].message);
 
-  const position = new Position({ name: req.body.name });
+  const position = new Position(_.pick(req.body, ['name']));
 
   await position.save();
   res.send(position);
