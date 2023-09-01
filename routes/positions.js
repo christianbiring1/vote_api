@@ -20,7 +20,7 @@ router.post('/', auth, async (req, res) => {
   res.send(position);
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
   const position = await Position.findByIdAndRemove(req.params.id);
 
   if(!position) return res.status(404).send("The position with the given id was not found");

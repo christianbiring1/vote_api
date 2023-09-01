@@ -1,6 +1,8 @@
 const {Candidate, validateCandidate} = require('../models/candidate');
 const { Election } = require('../models/election');
 const { Position } = require('../models/position');
+const auth = require('../middleware/auth');
+
 
 const express = require('express');
 const router = express.Router();
@@ -17,7 +19,7 @@ router.get('/:id', async (req, res) => {
   res.send(candidate);
 })
 
-router.post('/', async(req, res) => {
+router.post('/', auth, async(req, res) => {
   
   const { error } = validateCandidate(req.body);
   if(error) return res.status(400).send(error.details[0].message);
@@ -46,7 +48,7 @@ router.post('/', async(req, res) => {
   res.send(candidate);
 });
 
-router.put('/:id', async(req, res) => {
+router.put('/:id', auth, async(req, res) => {
   // Validate
   // If invalid, return 400 - Bad request
   const { error } = validateCandidate(req.body);
@@ -68,7 +70,7 @@ router.put('/:id', async(req, res) => {
   res.send(candidate);
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
   // Look up the candidate and Delete
   const candidate = await Candidate.findByIdAndRemove(req.params.id);
   // Not existing, return 404

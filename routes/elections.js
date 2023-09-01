@@ -1,4 +1,7 @@
 const {Election, validateElection} = require('../models/election');
+const auth = require('../middleware/auth');
+
+
 const express = require('express');
 const router = express.Router();
 
@@ -15,7 +18,7 @@ router.get('/:id', async (req, res) => {
   res.send(election);
 });
 
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
   const { error } = validateElection(req.body);
   if(error) return res.status(400).send(error.details[0].message);
 
@@ -27,7 +30,7 @@ router.post('/', async (req, res) => {
   res.send(election);
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
   const { error } = validateElection(req.body);
   if(error) return res.status(400).send(error.details[0].message);
 
@@ -41,7 +44,7 @@ router.put('/:id', async (req, res) => {
   res.send(election);
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
   const election = await Election.findByIdAndRemove(req.params.id);
 
   if(!election) return res.status(404).send("The election with the given ID was not found");
