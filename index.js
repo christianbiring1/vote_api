@@ -5,7 +5,7 @@ app.use(express.json());
 
 mongoose.connect('mongodb://localhost/voty')
   .then(() => console.log('Connected to MongoDB...'))
-  .catch(err => console.error('Could not connect to mongoDB...', err));
+  .catch(err => console.error('Could not connect to mongoDB...'));
 
 const elections = require('./routes/elections');
 const positions = require('./routes/positions');
