@@ -9,11 +9,16 @@ const userSchema = new mongoose.Schema({
     trim: true,
     lowercase: true
   },
-  id: {
+  email: {
     type: String,
     required: true,
     unique: true,
     trim: true
+  },
+  password: {
+    type: String,
+    required: true,
+    minlength: 5
   }
 });
 
@@ -22,12 +27,12 @@ const User = mongoose.model('User', userSchema);
 function validateUser(user) {
   const schema = {
     name: Joi.string().required(),
-    id: Joi.string().required()
+    email: Joi.string().required().email(),
+    password: Joi.string().min(5).required()
   };
 
-  return Joi.validate(user);
+  return Joi.validate(user, schema);
 };
 
-exports.userSchema = userSchema;
 exports.User = User;
 exports.validateUser = validateUser;
