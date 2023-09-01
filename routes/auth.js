@@ -19,6 +19,9 @@ router.post('/', async (req, res) => {
   const validPassword = await bcrypt.compare(req.body.password, user.password);
   if(!validPassword) return res.status(400).send('Invalid email or password');
 
+  // The jwt private key is to be store in an environment variable
+  // After installing the config library -> voty_jwtPrivateKey
+
   const token = jwt.sign({_id: user._id}, 'jwtPrivateKey');
 
   res.send(token);
