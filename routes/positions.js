@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const {Position, validatePosition} = require('../models/position');
+const auth = require('../middleware/auth');
 
 const express = require('express');
 const router = express.Router();
@@ -9,7 +10,7 @@ router.get('/', async (req, res) => {
   res.send(positions);
 });
 
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
   const { error } = validatePosition(req.body);
   if(error) return res.status(400).send(error.details[0].message);
 
