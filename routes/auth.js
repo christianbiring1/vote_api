@@ -21,8 +21,8 @@ router.post('/', async (req, res) => {
 
   // The jwt private key is to be store in an environment variable
   // After installing the config library -> voty_jwtPrivateKey
-
-  const token = jwt.sign({_id: user._id}, 'jwtPrivateKey');
+  const token = user.generateAuthToken();
+  // const token = jwt.sign({_id: user._id}, 'jwtPrivateKey');
 
   res.send(token);
 });
