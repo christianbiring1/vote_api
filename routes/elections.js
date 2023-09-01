@@ -19,11 +19,11 @@ router.post('/', async (req, res) => {
   const { error } = validateElection(req.body);
   if(error) return res.status(400).send(error.details[0].message);
 
-  let election = new Election({
+  const election = new Election({
     name: req.body.name,
     date: req.body.date
   });
-  election = await election.save();
+  await election.save();
   res.send(election);
 });
 
