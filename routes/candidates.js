@@ -19,7 +19,7 @@ router.get('/:id', async (req, res) => {
   res.send(candidate);
 })
 
-router.post('/', auth, async(req, res) => {
+router.post('/', async(req, res) => {
   
   const { error } = validateCandidate(req.body);
   if(error) return res.status(400).send(error.details[0].message);
@@ -48,7 +48,7 @@ router.post('/', auth, async(req, res) => {
   res.send(candidate);
 });
 
-router.put('/:id', auth, async(req, res) => {
+router.put('/:id', async(req, res) => {
   // Validate
   // If invalid, return 400 - Bad request
   const { error } = validateCandidate(req.body);
@@ -70,7 +70,7 @@ router.put('/:id', auth, async(req, res) => {
   res.send(candidate);
 });
 
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/:id', async (req, res) => {
   // Look up the candidate and Delete
   const candidate = await Candidate.findByIdAndRemove(req.params.id);
   // Not existing, return 404

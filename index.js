@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const express = require('express');
+const cors = require('cors');
 
 const elections = require('./routes/elections');
 const positions = require('./routes/positions');
@@ -11,6 +12,11 @@ const auth = require('./routes/auth');
 
 const app = express();
 app.use(express.json());
+app.use(cors({
+  origin: 'http://localhost:5173',
+  methods: 'GET, HEAD, PUT, PATCH, POST, DELETE',
+  credentials: true,
+}));
 
 mongoose.connect('mongodb://localhost/voty')
   .then(() => console.log('Connected to MongoDB...'))
