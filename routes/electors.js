@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const { Election } = require('../models/election');
 const {Elector, validateElector} = require('../models/elector');
 const auth = require('../middleware/auth');
@@ -27,8 +28,11 @@ router.post('/', async(req, res) => {
   const election = await Election.findById(req.body.electionId);
   if(!election) return res.status(400).send('Invalid election');
 
+  let elector = await Elector.findOne(_.pick(req.body, ['name', 'id']));
+  if(elector) return res.status(400).send('Elector with the given ID and name already existed');
 
-  const elector = new Elector({
+
+  elector = new Elector({
     name: req.body.name,
     id: req.body.id,
     province: req.body.province,
