@@ -13,6 +13,7 @@ const electorSchema = new mongoose.Schema({
   id: {
     type: String,
     required: true,
+    unique: true,
     trim: true
   },
   province: {

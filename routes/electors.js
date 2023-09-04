@@ -28,8 +28,8 @@ router.post('/', async(req, res) => {
   const election = await Election.findById(req.body.electionId);
   if(!election) return res.status(400).send('Invalid election');
 
-  let elector = await Elector.findOne(_.pick(req.body, ['name', 'id']));
-  if(elector) return res.status(400).send('Elector with the given ID and name already existed');
+  let elector = await Elector.findOne(_.pick(req.body, ['id']));
+  if(elector) return res.status(400).send('Elector with the given ID already existed');
 
 
   elector = new Elector({
