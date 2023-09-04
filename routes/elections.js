@@ -1,4 +1,8 @@
+const _ = require('lodash');
 const {Election, validateElection} = require('../models/election');
+const auth = require('../middleware/auth');
+
+
 const express = require('express');
 const router = express.Router();
 
@@ -18,8 +22,12 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   const { error } = validateElection(req.body);
   if(error) return res.status(400).send(error.details[0].message);
+  
+  let election = await Election.findOne(_.pick(req.body, ['name', 'date']));
+  if (election) return res.status(400).send('The election with the given name and date has already been created.')
 
-  const election = new Election({
+
+  election = new Election({
     name: req.body.name,
     date: req.body.date
   });

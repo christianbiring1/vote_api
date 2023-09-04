@@ -1,6 +1,9 @@
+const _ = require('lodash');
 const {Candidate, validateCandidate} = require('../models/candidate');
 const { Election } = require('../models/election');
 const { Position } = require('../models/position');
+const auth = require('../middleware/auth');
+
 
 const express = require('express');
 const router = express.Router();
@@ -28,7 +31,10 @@ router.post('/', async(req, res) => {
   const position = await Position.findById(req.body.positionId);
   if(!position) return res.status(400).send('Invalid position');
 
-  const candidate = new Candidate({
+  let candidate = Candidate.findOne(_.pick(req.body,['name', 'political_party']));
+  if(candidate) return res.status(400).send('Candidate with the same credential already existed.');
+
+  candidate = new Candidate({
     photo: req.body.photo,
     name: req.body.name,
     election: {
