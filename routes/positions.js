@@ -14,7 +14,10 @@ router.post('/', async (req, res) => {
   const { error } = validatePosition(req.body);
   if(error) return res.status(400).send(error.details[0].message);
 
-  const position = new Position(_.pick(req.body, ['name']));
+  let position = await Position.findOne(_.pick(req.body, ['name']));
+  if(position) return res.status(400).send('This position has already been created.')
+
+  position = new Position(_.pick(req.body, ['name']));
 
   await position.save();
   res.send(position);
