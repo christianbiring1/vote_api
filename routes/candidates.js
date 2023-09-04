@@ -32,7 +32,7 @@ router.post('/', async(req, res) => {
   if(!position) return res.status(400).send('Invalid position');
 
   let candidate = Candidate.findOne(_.pick(req.body,['name', 'political_party']));
-  if(!candidate) return res.status(400).send('Candidate with the same credential already existed.');
+  if(candidate) return res.status(400).send('Candidate with the same credential already existed.');
 
   candidate = new Candidate({
     photo: req.body.photo,
