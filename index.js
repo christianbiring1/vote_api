@@ -13,11 +13,8 @@ const uservoters = require('./routes/userAuth');
 
 const app = express();
 app.use(express.json());
-app.use(cors({
-  origin: 'http://localhost:5173',
-  methods: 'GET, HEAD, PUT, PATCH, POST, DELETE',
-  credentials: true,
-}));
+app.use(cors());
+app.use('/uploads', express.static('uploads'));
 
 mongoose.connect('mongodb://localhost/voty')
   .then(() => console.log('Connected to MongoDB...'))

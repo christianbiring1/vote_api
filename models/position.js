@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const positionSchema = new mongoose.Schema({
   name: {
     type: String,
-    unique: true,
     trim: true
   }
 });

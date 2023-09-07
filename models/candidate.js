@@ -46,7 +46,7 @@ function validateCandidate(candidate) {
     electionId: Joi.objectId().required(),
     positionId: Joi.objectId().required(),
     political_party: Joi.string().required(),
-    photo: Joi.string().required(),
+    photo: Joi.string(),
   }
 
   return Joi.validate(candidate, schema);

@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const multer = require('multer');
 const {Candidate, validateCandidate} = require('../models/candidate');
 const { Election } = require('../models/election');
 const { Position } = require('../models/position');
@@ -7,6 +8,17 @@ const auth = require('../middleware/auth');
 
 const express = require('express');
 const router = express.Router();
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './uploads');
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
 
 router.get('/', async (req, res) => {
   const candidates = await Candidate.find().sort('name');
@@ -20,8 +32,9 @@ router.get('/:id', async (req, res) => {
   res.send(candidate);
 })
 
-router.post('/', async(req, res) => {
+router.post('/', upload.single('photo'), async(req, res) => {
   
+  console.log(req.file);
   const { error } = validateCandidate(req.body);
   if(error) return res.status(400).send(error.details[0].message);
 
@@ -31,11 +44,12 @@ router.post('/', async(req, res) => {
   const position = await Position.findById(req.body.positionId);
   if(!position) return res.status(400).send('Invalid position');
 
-  let candidate = Candidate.findOne(_.pick(req.body,['name', 'political_party']));
-  if(candidate) return res.status(400).send('Candidate with the same credential already existed.');
 
-  candidate = new Candidate({
-    photo: req.body.photo,
+  // let candidate = Candidate.findOne(_.pick(req.body,['name', 'political_party']));
+  // if(candidate) return res.status(400).send('Candidate with the same credential already existed.');
+
+  const candidate = new Candidate({
+    photo: req.file.filename,
     name: req.body.name,
     election: {
       _id: election._id,
@@ -60,7 +74,7 @@ router.put('/:id', async(req, res) => {
   
   // Look up the candidate and Update candidate
   const candidate = await Candidate.findByIdAndUpdate(req.params.id, {
-    photo: req.body.photo,
+    photo: req.file.filename,
     name: req.body.name,
     positionId: req.body.positionId,
     political_party: req.body.political_party }, {
