@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const {Vote, validateVote} = require('../models/vote');
 const { Candidate } = require('../models/candidate');
 const { Elector } = require('../models/elector');
@@ -19,6 +20,10 @@ router.post('/', async (req, res) => {
 
   const elector = await Elector.findById(req.body.electorId);
   if(!elector) return res.status(400).send('Invalid elector');
+
+  // let vote = await Vote.findOne(_.pick(req.body, ['candidate', 'elector']));
+  // if(vote) return res.status(403).send('You cannot vote more than once!')
+
 
   const vote = new Vote({
     candidate: {
