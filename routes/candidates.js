@@ -45,12 +45,13 @@ router.post('/', upload.single('photo'), async(req, res) => {
   if(!position) return res.status(400).send('Invalid position');
 
 
-  // let candidate = Candidate.findOne(_.pick(req.body,['name', 'political_party']));
+  // let candidate = Candidate.findOne(_.pick(req.body,['first_name', 'last_name']));
   // if(candidate) return res.status(400).send('Candidate with the same credential already existed.');
 
   const candidate = new Candidate({
     photo: req.file.filename,
-    name: req.body.name,
+    first_name: req.body.first_name,
+    last_name: req.body.last_name,
     election: {
       _id: election._id,
       name: election.name,
