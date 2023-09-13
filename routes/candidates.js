@@ -2,6 +2,7 @@ const _ = require('lodash');
 const multer = require('multer');
 const {Candidate, validateCandidate} = require('../models/candidate');
 const { Election } = require('../models/election');
+const { Elector } = require('../models/elector');
 const { Position } = require('../models/position');
 const auth = require('../middleware/auth');
 
@@ -26,10 +27,18 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-  const candidate = await Candidate.findById(req.params.id);
+  const electorId = req.params.id;
 
-  if(!candidate) return res.status(404).send("The candidates with the given ID was not found")
-  res.send(candidate);
+  // Find the elector by ID to get the associated election
+  const elector = await Elector.findOne({ _id: electorId }).populate('election');
+
+  if (!elector) return res.status(404).send('Elector not found');
+
+  // Find the candidates associated with the electors's election
+  const candidates = await Candidate.find({
+    'election._id': elector.election._id,
+  }).sort('name');
+  res.send(candidates);
 })
 
 router.post('/', upload.single('photo'), async(req, res) => {
