@@ -6,7 +6,12 @@ const {positionSchema} = require('./position');
 const voteSchema = new mongoose.Schema({
   candidate: {
     type: new mongoose.Schema({
-      name: {
+      first_name: {
+        type: String,
+        lowercase: true,
+        required: true
+      },
+      last_name: {
         type: String,
         lowercase: true,
         required: true

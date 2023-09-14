@@ -28,7 +28,8 @@ router.post('/', async (req, res) => {
   const vote = new Vote({
     candidate: {
       _id: candidate._id,
-      name: candidate.name,
+      first_name: candidate.first_name,
+      last_name: candidate.last_name,
       position: candidate.position,
       political_party: candidate.political_party
     },
