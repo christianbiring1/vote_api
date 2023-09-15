@@ -15,6 +15,8 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use('/uploads', express.static('uploads'));
+// app.use('/files', express.static('files'));
+
 
 mongoose.connect('mongodb://localhost/voty')
   .then(() => console.log('Connected to MongoDB...'))

@@ -1,25 +1,17 @@
 const _ = require('lodash');
+// import { upload } from '../utils/storage';
 const multer = require('multer');
 const {Candidate, validateCandidate} = require('../models/candidate');
 const { Election } = require('../models/election');
 const { Elector } = require('../models/elector');
 const { Position } = require('../models/position');
 const auth = require('../middleware/auth');
+const { upload } = require('../utils/storage');
 
 
 const express = require('express');
 const router = express.Router();
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './uploads');
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname);
-  },
-});
-
-const upload = multer({ storage: storage });
 
 router.get('/', async (req, res) => {
   const candidates = await Candidate.find().sort('name');
