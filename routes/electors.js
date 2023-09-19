@@ -117,11 +117,19 @@ router.put('/:id', async (req, res) => {
   const { error } = validateElector(req.body);
   if(error) return res.status(400).send(error.details[0].message);
 
+  const election = await Election.findById(req.body.electionId);
+  if(!election) return res.status(400).send('Invalid election');
+  console.log(req.params.id);
+
   const elector = await Elector.findByIdAndUpdate(req.params.id, {
     name: req.body.name,
     id: req.body.id,
     province: req.body.province,
-    electionId: req.body.electionId,
+    election: {
+      _id: election._id,
+      name: election.name,
+      date: election.date
+    }
   },{
     new: true
   });
