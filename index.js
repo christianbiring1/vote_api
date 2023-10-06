@@ -10,6 +10,7 @@ const votes = require('./routes/votes');
 const users = require('./routes/users');
 const auth = require('./routes/auth');
 const uservoters = require('./routes/userAuth');
+const results = require('./routes/result');
 
 const app = express();
 app.use(express.json());
@@ -30,6 +31,7 @@ app.use('/api/votes', votes);
 app.use('/api/users', users);
 app.use('/api/auth', auth);
 app.use('/api/uservote', uservoters);
+app.use('/api/results', results);
 
 
 app.get('/', (req, res) => {
