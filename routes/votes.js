@@ -1,3 +1,4 @@
+// const mongoose = require('mongoose');
 const _ = require('lodash');
 const {Vote, validateVote} = require('../models/vote');
 const { Candidate } = require('../models/candidate');

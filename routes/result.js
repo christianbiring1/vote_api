@@ -1,15 +1,21 @@
 const pdf = require('pdfkit');
 const fs = require('fs');
+const _ = require('lodash');
 const path = require('path');
 const { Candidate } = require('../models/candidate');
+const { Elector } = require('../models/elector');
+const { Election } = require('../models/election');
 
 const express = require('express');
 const router = express.Router();
 
-router.get('/', async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
-    // Fetch candidates sorted by votes in descending order
-    const candidates = await Candidate.find().sort({ voice: -1 });
+    // Fetch candidates sorted by votes in descending order based on Elections
+    const electionId = req.params.id;
+    const candidates = await Candidate.find({ 'election._id': electionId}).sort({ voice: -1 });
+    const electors = await Elector.find({'election._id': electionId });
+    const election = await Election.findById(electionId);
 
     // Create a new PDF document
     const doc = new pdf();
@@ -21,43 +27,53 @@ router.get('/', async (req, res) => {
     // Pipe the PDF to the response
     doc.pipe(res);
 
-    // Defining the table headers
-    const tableHeaders = ['First Name', 'Last Name', 'Political Party', 'Voices'];
+    //Title
+    const title = `${_.capitalize(election.name)} Election results`;
+
+    // Add title centered above the table
+   doc.font('Helvetica').fontSize(18).text(title, { align: 'center' });
+   doc.moveDown(10);
+
 
     // Calculate column widths based on page width
-    const columnWidths = [100, 100, 100, 100, 100];
+    const columnWidths = [100, 100, 100, 100, 100, 100];
     const tableX = 50;
-    const startY = 50;
+    const startY = 150;
+    let tableY =  startY + 20;
 
-    // Set font size for table content
-    doc.font('Helvetica-Bold').text(tableHeaders.join('\t'), tableX, startY);
+    // Defining the table headers
+    const tableHeaders = ['First Name', 'Last Name', 'Political Party', 'Position', 'Voices', '%'];
+
+    // Calculate staring positions for each column
+    const columnPosition = [tableX];
+    for(let i = 0; i < columnWidths.length - 1; i += 1) {
+      columnPosition.push(columnPosition[i] + columnWidths[i]);
+    }
+
+    // Add table headers
+    for(let i = 0; i < tableHeaders.length; i += 1) {
+      doc.font('Helvetica-Bold').fontSize(12);
+      doc.text(tableHeaders[i], columnPosition[i], startY);
+    }
 
     // Add candidate information to the PDF table
-    let tableY = startY + 20;
+
     for (const candidate of candidates) {
-      doc.text(candidate.first_name, tableX + columnWidths[0], tableY);
-      doc.text(candidate.last_name, tableX + columnWidths[0] + columnWidths[1], tableY);
-      doc.text(candidate.political_party, tableX + columnWidths[0] + columnWidths[1] + columnWidths[2], tableY);
-      doc.text(candidate.position.name, tableX + columnWidths[0] + columnWidths[1] + columnWidths[2] + columnWidths[3], tableY);
-      doc.text(candidate.voice.toString(), tableX + columnWidths[0] + columnWidths[1] + columnWidths[2] + columnWidths[3] + columnWidths[4], tableY);
+      doc.font('Helvetica').fontSize(12).text(_.capitalize(candidate.first_name), tableX, tableY);
+      doc.font('Helvetica').fontSize(12).text(_.capitalize(candidate.last_name), tableX + columnWidths[0], tableY);
+      doc.font('Helvetica').fontSize(12).text(_.toUpper(candidate.political_party), tableX + columnWidths[0] + columnWidths[1], tableY);
+      doc.font('Helvetica').fontSize(12).text(_.capitalize(candidate.position.name), tableX + columnWidths[0] + columnWidths[1] + columnWidths[2], tableY);
+      doc.font('Helvetica').fontSize(12).text(candidate.voice.toString(), tableX + columnWidths[0] + columnWidths[1] + columnWidths[2] + columnWidths[3], tableY);
+      doc.font('Helvetica').fontSize(12).text(((candidate.voice / electors.length) * 100).toString(), tableX + columnWidths[0] + columnWidths[1] + columnWidths[2] + columnWidths[3] + columnWidths[4], tableY);
 
+      tableY += 20;
     }
-    // doc.fontSize(16).text('Candidate Report (Descending Order by Votes)', { align: 'center' });
-
-    // Add candidate information to the PDF
-    // candidates.forEach((candidate, index) => {
-    //   doc.fontSize(12).text(`#${index + 1}: ${candidate.first_name} ${candidate.last_name}`);
-    //   doc.fontSize(10).text(`Position: ${candidate.position}`);
-    //   doc.fontSize(10).text(`Political Party: ${candidate.political_party}`);
-    //   doc.fontSize(10).text(`Total Votes: ${candidate.voice}`);
-    //   doc.moveDown(1);
-    // });
 
     // End the PDF document
     doc.end();
 
     // You can also save the PDF to a file if needed
-    const pdfPath = path.join(__dirname, 'candidate_report.pdf');
+    const pdfPath = path.join(__dirname, `${Date.now() + 'candidate_report.pdf'}`);
     doc.pipe(fs.createWriteStream(pdfPath));
 
     // Send the PDF as a response
