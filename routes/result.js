@@ -21,16 +21,37 @@ router.get('/', async (req, res) => {
     // Pipe the PDF to the response
     doc.pipe(res);
 
-    doc.fontSize(16).text('Candidate Report (Descending Order by Votes)', { align: 'center' });
+    // Defining the table headers
+    const tableHeaders = ['First Name', 'Last Name', 'Political Party', 'Voices'];
+
+    // Calculate column widths based on page width
+    const columnWidths = [100, 100, 100, 100, 100];
+    const tableX = 50;
+    const startY = 50;
+
+    // Set font size for table content
+    doc.font('Helvetica-Bold').text(tableHeaders.join('\t'), tableX, startY);
+
+    // Add candidate information to the PDF table
+    let tableY = startY + 20;
+    for (const candidate of candidates) {
+      doc.text(candidate.first_name, tableX + columnWidths[0], tableY);
+      doc.text(candidate.last_name, tableX + columnWidths[0] + columnWidths[1], tableY);
+      doc.text(candidate.political_party, tableX + columnWidths[0] + columnWidths[1] + columnWidths[2], tableY);
+      doc.text(candidate.position.name, tableX + columnWidths[0] + columnWidths[1] + columnWidths[2] + columnWidths[3], tableY);
+      doc.text(candidate.voice.toString(), tableX + columnWidths[0] + columnWidths[1] + columnWidths[2] + columnWidths[3] + columnWidths[4], tableY);
+
+    }
+    // doc.fontSize(16).text('Candidate Report (Descending Order by Votes)', { align: 'center' });
 
     // Add candidate information to the PDF
-    candidates.forEach((candidate, index) => {
-      doc.fontSize(12).text(`#${index + 1}: ${candidate.first_name} ${candidate.last_name}`);
-      doc.fontSize(10).text(`Position: ${candidate.position}`);
-      doc.fontSize(10).text(`Political Party: ${candidate.political_party}`);
-      doc.fontSize(10).text(`Total Votes: ${candidate.voice}`);
-      doc.moveDown(1);
-    });
+    // candidates.forEach((candidate, index) => {
+    //   doc.fontSize(12).text(`#${index + 1}: ${candidate.first_name} ${candidate.last_name}`);
+    //   doc.fontSize(10).text(`Position: ${candidate.position}`);
+    //   doc.fontSize(10).text(`Political Party: ${candidate.political_party}`);
+    //   doc.fontSize(10).text(`Total Votes: ${candidate.voice}`);
+    //   doc.moveDown(1);
+    // });
 
     // End the PDF document
     doc.end();
