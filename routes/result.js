@@ -1,7 +1,7 @@
+const path = require('path');
+const _ = require('lodash');
 const pdf = require('pdfkit');
 const fs = require('fs');
-const _ = require('lodash');
-const path = require('path');
 const { Candidate } = require('../models/candidate');
 const { Elector } = require('../models/elector');
 const { Election } = require('../models/election');

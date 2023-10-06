@@ -1,4 +1,3 @@
-// const mongoose = require('mongoose');
 const _ = require('lodash');
 const {Vote, validateVote} = require('../models/vote');
 const { Candidate } = require('../models/candidate');
@@ -25,12 +24,10 @@ router.post('/', async (req, res) => {
   // let vote = await Vote.findOne(_.pick(req.body, ['candidate', 'elector']));
   // if(vote) return res.status(403).send('You cannot vote more than once!')
 
-  const session = await mongoose.startSession();
-  session.startTransaction();
+  // const session = await mongoose.startSession();
+  // session.startTransaction();
 
-  try {
-    // Create a new vote
-    const vote = new Vote({
+  const vote = new Vote({
       candidate: {
         _id: candidate._id,
         first_name: candidate.first_name,
@@ -51,19 +48,45 @@ router.post('/', async (req, res) => {
     candidate.voice += 1;
 
     // Save both the vote and the updated candidate inside the transaction
-    await vote.save({ session });
-    await candidate.save({ session });
+    await vote.save();
+    await candidate.save();
 
-    await session.commitTransaction();
-    session.endSession();
+  // try {
+  //   // Create a new vote
+  //   const vote = new Vote({
+  //     candidate: {
+  //       _id: candidate._id,
+  //       first_name: candidate.first_name,
+  //       last_name: candidate.last_name,
+  //       position: candidate.position,
+  //       political_party: candidate.political_party
+  //     },
+  //     elector: {
+  //       _id: elector._id,
+  //       name: elector.name,
+  //       id: elector.id,
+  //       province: elector.province
+  //     }
+  //   });
+
+  //   // Increase the candidate's vote count
+
+  //   candidate.voice += 1;
+
+  //   // Save both the vote and the updated candidate inside the transaction
+  //   await vote.save({ session });
+  //   await candidate.save({ session });
+
+  //   await session.commitTransaction();
+  //   session.endSession();
 
 
-    res.send(vote);
-  } catch (error) {
-    await session.abortTransaction();
-    session.endSession();
-    res.status(500).send('Transaction failed. Vote not recorded.');
-  }
+  //   res.send(vote);
+  // } catch (error) {
+  //   await session.abortTransaction();
+  //   session.endSession();
+  //   res.status(500).send('Transaction failed. Vote not recorded.');
+  // }
 });
 
 module.exports = router;
