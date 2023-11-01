@@ -9,8 +9,8 @@ router.post('/', async (req, res) => {
   const { error } = validate(req.body);
   if(error) return res.status(400).send(error.details[0].message);
 
-  const voter = await Elector.findOne(_.pick(req.body, ['name', 'id']));
-  if(!voter) return res.status(400).send('Invalid name or ID');
+  const voter = await Elector.findOne(_.pick(req.body, ['id']));
+  if(!voter) return res.status(400).send('Invalid ID');
 
 
   res.send(voter);
@@ -19,7 +19,7 @@ router.post('/', async (req, res) => {
 
 function validate(req) {
   const schema = {
-    name: Joi.string().required(),
+    // name: Joi.string().required(),
     id: Joi.string().required()
   };
 

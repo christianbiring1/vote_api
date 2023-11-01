@@ -10,14 +10,14 @@ const votes = require('./routes/votes');
 const users = require('./routes/users');
 const auth = require('./routes/auth');
 const uservoters = require('./routes/userAuth');
+const results = require('./routes/result');
 
 const app = express();
 app.use(express.json());
-app.use(cors({
-  origin: 'http://localhost:5173',
-  methods: 'GET, HEAD, PUT, PATCH, POST, DELETE',
-  credentials: true,
-}));
+app.use(cors());
+app.use('/uploads', express.static('uploads'));
+// app.use('/files', express.static('files'));
+
 
 mongoose.connect('mongodb://localhost/voty')
   .then(() => console.log('Connected to MongoDB...'))
@@ -31,6 +31,7 @@ app.use('/api/votes', votes);
 app.use('/api/users', users);
 app.use('/api/auth', auth);
 app.use('/api/uservote', uservoters);
+app.use('/api/results', results);
 
 
 app.get('/', (req, res) => {

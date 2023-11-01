@@ -5,7 +5,15 @@ const {electionSchema} = require('./election');
 const {positionSchema} = require('./position');
 
 const candidateSchema = new mongoose.Schema({
-  name: {
+  first_name: {
+    type: String,
+    lowercase: true,
+    trim: true,
+    required: true,
+    minlength: 3,
+    maxlength: 20
+  },
+  last_name: {
     type: String,
     lowercase: true,
     trim: true,
@@ -42,11 +50,12 @@ const Candidate = mongoose.model('Candidate', candidateSchema);
 
 function validateCandidate(candidate) {
   const schema = {
-    name: Joi.string().min(3).max(20).required(),
+    first_name: Joi.string().min(3).max(20).required(),
+    last_name: Joi.string().min(3).max(20).required(),
     electionId: Joi.objectId().required(),
     positionId: Joi.objectId().required(),
     political_party: Joi.string().required(),
-    photo: Joi.string().required(),
+    photo: Joi.string(),
   }
 
   return Joi.validate(candidate, schema);
